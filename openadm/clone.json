@@ -1,0 +1,132 @@
+[
+    {
+        "unique": 2, 
+        "total": 3, 
+        "bucket": 1440720000
+    }, 
+    {
+        "unique": 0, 
+        "total": 0, 
+        "bucket": 1440633600
+    }, 
+    {
+        "unique": 0, 
+        "total": 0, 
+        "bucket": 1440547200
+    }, 
+    {
+        "unique": 0, 
+        "total": 0, 
+        "bucket": 1440460800
+    }, 
+    {
+        "unique": 0, 
+        "total": 0, 
+        "bucket": 1440374400
+    }, 
+    {
+        "unique": 0, 
+        "total": 0, 
+        "bucket": 1440288000
+    }, 
+    {
+        "unique": 0, 
+        "total": 0, 
+        "bucket": 1440201600
+    }, 
+    {
+        "unique": 0, 
+        "total": 0, 
+        "bucket": 1440115200
+    }, 
+    {
+        "unique": 0, 
+        "total": 0, 
+        "bucket": 1440028800
+    }, 
+    {
+        "unique": 0, 
+        "total": 0, 
+        "bucket": 1439942400
+    }, 
+    {
+        "unique": 0, 
+        "total": 0, 
+        "bucket": 1439856000
+    }, 
+    {
+        "unique": 0, 
+        "total": 0, 
+        "bucket": 1439769600
+    }, 
+    {
+        "unique": 3, 
+        "total": 4, 
+        "bucket": 1439683200
+    }, 
+    {
+        "unique": 0, 
+        "total": 0, 
+        "bucket": 1439596800
+    }, 
+    {
+        "unique": 0, 
+        "total": 0, 
+        "bucket": 1439510400
+    }, 
+    {
+        "total": 0, 
+        "unique": 0, 
+        "bucket": 1440806400
+    }, 
+    {
+        "total": 0, 
+        "unique": 0, 
+        "bucket": 1440892800
+    }, 
+    {
+        "unique": 0, 
+        "total": 0, 
+        "bucket": 1440979200
+    }, 
+    {
+        "total": 0, 
+        "unique": 0, 
+        "bucket": 1441152000
+    }, 
+    {
+        "total": 1, 
+        "unique": 1, 
+        "bucket": 1441065600
+    }, 
+    {
+        "unique": 0, 
+        "total": 0, 
+        "bucket": 1441324800
+    }, 
+    {
+        "unique": 1, 
+        "total": 1, 
+        "bucket": 1441238400
+    }, 
+    {
+        "total": 0, 
+        "unique": 0, 
+        "bucket": 1441584000
+    }, 
+    {
+        "total": 0, 
+        "unique": 0, 
+        "bucket": 1441497600
+    }, 
+    {
+        "total": 0, 
+        "unique": 0, 
+        "bucket": 1441411200
+    }, 
+    {
+        "unique": 0, 
+        "total": 0, 
+        "bucket": 1441670400
+    }
+]
