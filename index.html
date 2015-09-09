@@ -1,69 +1,137 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
-    <link rel="stylesheet" type="text/css" href="dc.css"/>
 <title>OpenAdm</title>
   
 
 <div id="body">
-  <div id="charts">
-  <div class='pie-graph span4' id='dc-line-chart'>
-    <h4>Visitors / Clones</h4>
+  <div id="charts" style="height:400px">
+  <div class='pie-graph span4' id='dc-line-chart' >
   </div>
 </div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/crossfilter/1.3.12/crossfilter.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.js"></script>
-<script type="text/javascript" src="http://dc-js.github.io/dc.js/js/dc.js"></script>
 <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+<script src="echarts-all.js"></script>
 <script>
-var url_traffic = "https://raw.githubusercontent.com/CliffLin/dlinknctu/master/openadm/traffic.json";
-var url_clone =  "https://raw.githubusercontent.com/CliffLin/dlinknctu/master/openadm/clone.json";
-d3.json(url_traffic,function(error, flights) {
-    temp = 0;
-    flights.forEach(function(d, i) {
-      d.index = i;
-      d.date = parseDate(d.bucket);
-      d.total = temp+d.total;
-      temp = d.total;
-    });
-    function parseDate(d) {
-      return new Date(d*1000);
-    }
-    var flight = crossfilter(flights),
-        all = flight.groupAll(),
-        date = flight.dimension(function(d) { return d.date; }),
-        total = date.group().reduceSum(function(d){return d.total;})
-
-    d3.json(url_clone,function(error, clones) {
-      temp = 0;
-      clones.forEach(function(d, i) {
-        d.total = temp+d.total;
-        d.date = parseDate(d.bucket);
-        temp = d.total;
-      });
-      function parseDate(d) {
-        return new Date(d*1000);
+function parseDate(d) {
+  return new Date(d*1000);
+}
+$(document).ready(function() {
+  $.ajax({
+    type:'get',
+    url:'https://raw.githubusercontent.com/CliffLin/dlinknctu/master/openadm/traffic.json',    
+ 　　dataType:'text',
+ 　　success:function(msg){  
+      var trafficObj=JSON.parse(msg);   
+      var myChart = echarts.init(document.getElementById('charts'));  
+      for(i=0;i<trafficObj.length;i++)
+      {
+        trafficObj[i]["bucket"] = parseDate(trafficObj[i]["bucket"]);
       }
-      var clone = crossfilter(clones),
-          c_all = clone.groupAll(),
-          c_date = clone.dimension(function(d) { return d.date; }),
-          c_total = c_date.group().reduceSum(function(d){return d.total;})
-
-      dc.compositeChart("#dc-line-chart")
-        .width(768)
-        .height(480)
-        .x(d3.time.scale().domain([new Date(2015, 8, 1), new Date(2016, 8, 30)]))
-        .brushOn(false)
-        .renderLabel(true)
-        .renderHorizontalGridLines(true)
-        .elasticX(true)
-        .dimension(date)
-        .legend(dc.legend().x(100).y(100).itemHeight(13).gap(5))
-        .compose([
-          dc.lineChart("#dc-line-chart").group(total, "Visitors").colors("blue").renderDataPoints(true),
-          dc.lineChart("#dc-line-chart").group(c_total, "Clones").colors("red").renderDataPoints(true)]).render();  
-    });
-  });
-
-
+      $.ajax({
+        type:'get',  
+        url:'https://raw.githubusercontent.com/CliffLin/dlinknctu/master/openadm/clone.json',    
+        dataType:'text', 
+        success:function(msg){  
+          var cloneObj=JSON.parse(msg);   
+          for(i=0;i<cloneObj.length;i++)
+          {
+            cloneObj[i]["bucket"] = parseDate(cloneObj[i]["bucket"]);
+          }
+          setoptiondata(trafficObj,cloneObj,myChart);
+        }
+      });
+ 　  },
+    error:function(){
+      alert('error');  
+    }  
+  })
+});
+  var url_traffic = "https://raw.githubusercontent.com/CliffLin/dlinknctu/master/openadm/traffic.json";
+  var url_clone =  "https://raw.githubusercontent.com/CliffLin/dlinknctu/master/openadm/clone.json";
+  function setoptiondata(jsonTrafficData,jsonCloneData,myChart) {
+    option = {
+    tooltip : {
+        trigger: 'axis'
+    },
+    legend: {
+        data:['Visitor','Clone']
+    },
+    toolbox: {
+        show : false,
+        feature : {
+            mark : {show: true},
+            dataZoom : {show: true},
+            dataView : {show: true},
+            magicType : {show: true, type: ['line', 'bar', 'stack', 'tiled']},
+            restore : {show: true},
+            saveAsImage : {show: true}
+        }
+    },
+    calculable : true,
+    dataZoom : {
+        show : true,
+        realtime : true,
+        start : 20,
+        end : 80
+    },
+    xAxis : [
+        {
+            type : 'category',
+            boundaryGap : false,
+            data : function (){
+                var list = [];
+                for (i = 0; i < jsonTrafficData.length; i++) {
+                    d = jsonTrafficData[i]["bucket"];
+                    list.push(d.getFullYear()+"/"+d.getMonth()+"/"+d.getDate());
+                }
+                return list;
+            }()
+        }
+    ],
+    yAxis : [
+        {
+            type : 'value',
+            position: 'left',
+            name:'Visitor'
+        },
+        {
+            type : 'value',
+            position: 'right',
+            name:'Clone'
+        }
+    ],
+    series : [
+        {
+            name:'Visitor',
+            type:'line',
+            data:function (){
+                var list = [];
+                temp = 0;                
+                for (i = 0; i < jsonTrafficData.length; i++) {
+                    d = temp + jsonTrafficData[i]["total"];
+                    temp = d;
+                    list.push(d);
+                }
+                return list;
+            }()
+        },
+        {
+            name:'Clone',
+            type:'line',
+            yAxisIndex: 1,
+            data:function (){
+                var list = [];
+                temp = 0;
+                for (i = 0; i < jsonCloneData.length; i++) {
+                    d = temp + jsonCloneData[i]["total"];
+                    temp = d ;
+                    list.push(d);
+                }
+                return list;
+            }()
+        }
+    ]
+};
+    myChart.setOption(option);                 
+  }              
 
 </script>
