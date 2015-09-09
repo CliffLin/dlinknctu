@@ -81,7 +81,7 @@ $(document).ready(function() {
                 var list = [];
                 for (i = 0; i < jsonTrafficData.length; i++) {
                     d = jsonTrafficData[i]["bucket"];
-                    list.push(d.getFullYear()+"/"+d.getMonth()+"/"+d.getDate());
+                    list.push(d.getFullYear()+"/"+(d.getMonth()+1)+"/"+d.getDate());
                 }
                 return list;
             }()
