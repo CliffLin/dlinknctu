@@ -47,7 +47,7 @@ def storeJson(repo,data,dataType):
             jsonOld[I]['total'] = jsonData[i]['total']
             jsonOld[I]['unique'] = jsonData[i]['unique']
 
-
+    jsonOld = sorted(jsonOld, key=lambda k:k['bucket'])
     json.dump(jsonOld,newJson,indent=4)
 
 def commit(repo):
