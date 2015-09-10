@@ -22,8 +22,8 @@
 <div class="col-sm-1"></div>
 <div class="col-sm-10">
 <ul class="nav nav-tabs" role="tablist">
-  <li role="presentation" class="active"><a href="#adm" aria-controls="adm" role="tab" data-toggle="tab">OpenAdm</a></li>
-  <li role="presentation"><a href="#net" aria-controls="net" role="tab" data-toggle="tab">OpenNet</a></li>
+  <li role="presentation" id="tabAdm" class="active"><a href="#adm" aria-controls="adm" role="tab" data-toggle="tab">OpenAdm</a></li>
+  <li role="presentation" id="tabNet"><a href="#net" aria-controls="net" role="tab" data-toggle="tab">OpenNet</a></li>
 </ul>
 <div class="tab-content">
   <div role="tabpanel" class="tab-pane active" id="adm" ><div id="openadm" style="height:300px"></div></div>
@@ -40,25 +40,28 @@ var adm_traffic = "https://raw.githubusercontent.com/CliffLin/dlinknctu/master/o
 var adm_clone =  "https://raw.githubusercontent.com/CliffLin/dlinknctu/master/openadm/clone.json";
 var net_traffic = "https://raw.githubusercontent.com/CliffLin/dlinknctu/master/opennet/traffic.json";
 var net_clone =  "https://raw.githubusercontent.com/CliffLin/dlinknctu/master/opennet/clone.json";
-
+var netChart = echarts.init(document.getElementById('opennet')); 
+var admChart = echarts.init(document.getElementById('openadm'));  
+var admTrafficObj = null;
+var admCloneObj = null;
+var netTrafficObj = null;
+var netCloneObj = null;
 function parseDate(d) {
   return new Date(d*1000);
 }
 function OpenAdm() {
-  var trafficObj = null;
-  var cloneObj = null;
-  var admChart = echarts.init(document.getElementById('openadm'));  
+  
   $.ajax({
     type:'get',
     url:adm_traffic,    
  　　dataType:'text',
  　　success:function(msg){  
-      trafficObj=JSON.parse(msg);   
-      for(i=0;i<trafficObj.length;i++)
+      admTrafficObj=JSON.parse(msg);   
+      for(i=0;i<admTrafficObj.length;i++)
       {
-        trafficObj[i]["bucket"] = parseDate(trafficObj[i]["bucket"]);
+        admTrafficObj[i]["bucket"] = parseDate(admTrafficObj[i]["bucket"]);
       }
-      setData(trafficObj,cloneObj,admChart);      
+      setData(admTrafficObj,admCloneObj,admChart);      
  　  },
     error:function(){
       alert('error');  
@@ -69,19 +72,17 @@ function OpenAdm() {
     url:adm_clone,    
     dataType:'text', 
     success:function(msg){  
-      cloneObj=JSON.parse(msg); 
-      for(i=0;i<cloneObj.length;i++)
+      admCloneObj=JSON.parse(msg); 
+      for(i=0;i<admCloneObj.length;i++)
       {
-        cloneObj[i]["bucket"] = parseDate(cloneObj[i]["bucket"]);
+        admCloneObj[i]["bucket"] = parseDate(admCloneObj[i]["bucket"]);
       }
-      setData(trafficObj,cloneObj,admChart);
+      setData(admTrafficObj,admCloneObj,admChart);
     }
   });
 }
 function OpenNet() {
-  var netTrafficObj = null;
-  var netCloneObj = null;
-  var netChart = echarts.init(document.getElementById('opennet')); 
+
   $.ajax({
     type:'get',  
     url:net_traffic,    
@@ -163,6 +164,9 @@ function setData(jsonTrafficData,jsonCloneData,myChart) {
     ],
     yAxis : [
         {
+            splitLine : {
+              show : false
+            },
             axisLabel : {
               textStyle:{fontSize:"18",color:'gray'}
             },
@@ -172,6 +176,9 @@ function setData(jsonTrafficData,jsonCloneData,myChart) {
             nameTextStyle:{fontSize:"20"}            
         },
         {
+            splitLine : {
+              show : false
+            },
             axisLabel : {
               textStyle:{fontSize:"18",color:'gray'}
             },
@@ -219,12 +226,26 @@ function setData(jsonTrafficData,jsonCloneData,myChart) {
   };
   myChart.setOption(option);
   myChart.setTheme("infographic");
+  return true;
 }       
 $(document).ready(function() {
   OpenAdm();
-  setTimeout(function(){ OpenNet(); }, 3000);
-  
+  OpenNet();
 });
+$('#tabNet a').click(function (e) {
+  setTimeout(function(){
+    netChart.resize();
+    setData(netTrafficObj,netCloneObj,netChart);
+  },100);
+  
+
+});
+$('#tabAdm a').click(function (e) {
+  setTimeout(function(){
+    admChart.resize();
+    setData(admTrafficObj,admCloneObj,admChart);
+  },100);
+})
 
        
 
