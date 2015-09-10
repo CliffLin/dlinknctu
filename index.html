@@ -156,7 +156,7 @@ function setData(jsonTrafficData,jsonCloneData,myChart) {
                   temp = jsonCloneData;
                 for (i = 0; i < temp.length; i++) {
                     d = temp[i]["bucket"];
-                    list.push(d.getFullYear()+"/"+d.getMonth()+"/"+d.getDate());
+                    list.push(d.getFullYear()+"/"+(d.getMonth()+1)+"/"+d.getDate());
                 }
                 return list;
             }()
