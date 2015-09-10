@@ -1,59 +1,127 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
+<head>
 <title>OpenAdm</title>
-  
-
-<div id="body">
-  <div id="charts" style="height:400px">
-  <div class='pie-graph span4' id='dc-line-chart' >
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+</head>
+<style>
+.nav-tabs>li.active>a{
+  color: black;
+  background-color: gray;
+  border: 1px solid gray;
+}
+</style>
+<body style="background-color:#292929">
+<nav class="navbar navbar-inverse">
+  <div class="container-fluid">
+     <div class="navbar-header">
+       <a class="navbar-brand" href="#">WinLab</a>
+     </div>
   </div>
+</nav>
+<div class="col-sm-1"></div>
+<div class="col-sm-10">
+<ul class="nav nav-tabs" role="tablist">
+  <li role="presentation" class="active"><a href="#adm" aria-controls="adm" role="tab" data-toggle="tab">OpenAdm</a></li>
+  <li role="presentation"><a href="#net" aria-controls="net" role="tab" data-toggle="tab">OpenNet</a></li>
+</ul>
+<div class="tab-content">
+  <div role="tabpanel" class="tab-pane active" id="adm" ><div id="openadm" style="height:300px"></div></div>
+  <div role="tabpanel" class="tab-pane" id="net"><div id="opennet" style="height:300px"></div></div>
 </div>
+</div>
+</body>
 <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
-<script src="echarts-all.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/2.2.7/echarts-all.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 <script>
+
+var adm_traffic = "https://raw.githubusercontent.com/CliffLin/dlinknctu/master/openadm/traffic.json";
+var adm_clone =  "https://raw.githubusercontent.com/CliffLin/dlinknctu/master/openadm/clone.json";
+var net_traffic = "https://raw.githubusercontent.com/CliffLin/dlinknctu/master/opennet/traffic.json";
+var net_clone =  "https://raw.githubusercontent.com/CliffLin/dlinknctu/master/opennet/clone.json";
+
 function parseDate(d) {
   return new Date(d*1000);
 }
-$(document).ready(function() {
+function OpenAdm() {
+  var trafficObj = null;
+  var cloneObj = null;
+  var admChart = echarts.init(document.getElementById('openadm'));  
   $.ajax({
     type:'get',
-    url:'https://raw.githubusercontent.com/CliffLin/dlinknctu/master/openadm/traffic.json',    
+    url:adm_traffic,    
  　　dataType:'text',
  　　success:function(msg){  
-      var trafficObj=JSON.parse(msg);   
-      var myChart = echarts.init(document.getElementById('charts'));  
+      trafficObj=JSON.parse(msg);   
       for(i=0;i<trafficObj.length;i++)
       {
         trafficObj[i]["bucket"] = parseDate(trafficObj[i]["bucket"]);
       }
-      $.ajax({
-        type:'get',  
-        url:'https://raw.githubusercontent.com/CliffLin/dlinknctu/master/openadm/clone.json',    
-        dataType:'text', 
-        success:function(msg){  
-          var cloneObj=JSON.parse(msg);   
-          for(i=0;i<cloneObj.length;i++)
-          {
-            cloneObj[i]["bucket"] = parseDate(cloneObj[i]["bucket"]);
-          }
-          setoptiondata(trafficObj,cloneObj,myChart);
-        }
-      });
+      setData(trafficObj,cloneObj,admChart);      
  　  },
     error:function(){
       alert('error');  
     }  
-  })
-});
-  var url_traffic = "https://raw.githubusercontent.com/CliffLin/dlinknctu/master/openadm/traffic.json";
-  var url_clone =  "https://raw.githubusercontent.com/CliffLin/dlinknctu/master/openadm/clone.json";
-  function setoptiondata(jsonTrafficData,jsonCloneData,myChart) {
-    option = {
+  });
+  $.ajax({
+    type:'get',  
+    url:adm_clone,    
+    dataType:'text', 
+    success:function(msg){  
+      cloneObj=JSON.parse(msg); 
+      for(i=0;i<cloneObj.length;i++)
+      {
+        cloneObj[i]["bucket"] = parseDate(cloneObj[i]["bucket"]);
+      }
+      setData(trafficObj,cloneObj,admChart);
+    }
+  });
+}
+function OpenNet() {
+  var netTrafficObj = null;
+  var netCloneObj = null;
+  var netChart = echarts.init(document.getElementById('opennet')); 
+  $.ajax({
+    type:'get',  
+    url:net_traffic,    
+    dataType:'text', 
+    success:function(msg){  
+      netTrafficObj=JSON.parse(msg); 
+      for(i=0;i<netTrafficObj.length;i++)
+      {
+        netTrafficObj[i]["bucket"] = parseDate(netTrafficObj[i]["bucket"]);
+      }
+      setData(netTrafficObj,netCloneObj,netChart);
+    }
+  });
+  $.ajax({
+    type:'get',  
+    url:net_clone,    
+    dataType:'text', 
+    success:function(msg){  
+      netCloneObj=JSON.parse(msg); 
+      for(i=0;i<netCloneObj.length;i++)
+      {
+        netCloneObj[i]["bucket"] = parseDate(netCloneObj[i]["bucket"]);
+      }
+      setData(netTrafficObj,netCloneObj,netChart);
+    }
+  });
+}
+function setData(jsonTrafficData,jsonCloneData,myChart) {
+  option = {
     tooltip : {
         trigger: 'axis'
     },
     legend: {
-        data:['Visitor','Clone']
+        data:[{
+          name:'Visitor',
+          textStyle:{fontSize:"18", color:'gray'}
+        },{
+          name:'Clone',
+          textStyle:{fontSize:"18", color:'gray'}
+        }]
     },
     toolbox: {
         show : false,
@@ -66,7 +134,7 @@ $(document).ready(function() {
             saveAsImage : {show: true}
         }
     },
-    calculable : true,
+    calculable : false,
     dataZoom : {
         show : true,
         realtime : true,
@@ -75,13 +143,19 @@ $(document).ready(function() {
     },
     xAxis : [
         {
+            axisLabel : {
+              textStyle:{fontSize:"18",color:'gray'}
+            },
             type : 'category',
             boundaryGap : false,
             data : function (){
                 var list = [];
-                for (i = 0; i < jsonTrafficData.length; i++) {
-                    d = jsonTrafficData[i]["bucket"];
-                    list.push(d.getFullYear()+"/"+(d.getMonth()+1)+"/"+d.getDate());
+                var temp = jsonTrafficData;
+                if(jsonTrafficData == null)
+                  temp = jsonCloneData;
+                for (i = 0; i < temp.length; i++) {
+                    d = temp[i]["bucket"];
+                    list.push(d.getFullYear()+"/"+d.getMonth()+"/"+d.getDate());
                 }
                 return list;
             }()
@@ -89,14 +163,22 @@ $(document).ready(function() {
     ],
     yAxis : [
         {
+            axisLabel : {
+              textStyle:{fontSize:"18",color:'gray'}
+            },
             type : 'value',
             position: 'left',
-            name:'Visitor'
+            name:'Visitor',
+            nameTextStyle:{fontSize:"20"}            
         },
         {
+            axisLabel : {
+              textStyle:{fontSize:"18",color:'gray'}
+            },
             type : 'value',
             position: 'right',
-            name:'Clone'
+            name:'Clone',
+            nameTextStyle:{fontSize:"20"}
         }
     ],
     series : [
@@ -105,7 +187,9 @@ $(document).ready(function() {
             type:'line',
             data:function (){
                 var list = [];
-                temp = 0;                
+                temp = 0;               
+                if(jsonTrafficData == null)
+                  return list; 
                 for (i = 0; i < jsonTrafficData.length; i++) {
                     d = temp + jsonTrafficData[i]["total"];
                     temp = d;
@@ -121,6 +205,8 @@ $(document).ready(function() {
             data:function (){
                 var list = [];
                 temp = 0;
+                if(jsonCloneData == null)
+                  return list;
                 for (i = 0; i < jsonCloneData.length; i++) {
                     d = temp + jsonCloneData[i]["total"];
                     temp = d ;
@@ -130,8 +216,16 @@ $(document).ready(function() {
             }()
         }
     ]
-};
-    myChart.setOption(option);                 
-  }              
+  };
+  myChart.setOption(option);
+  myChart.setTheme("infographic");
+}       
+$(document).ready(function() {
+  OpenAdm();
+  setTimeout(function(){ OpenNet(); }, 2000);
+  
+});
+
+       
 
 </script>
