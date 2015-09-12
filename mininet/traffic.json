@@ -1,0 +1,72 @@
+[
+    {
+        "unique": 0, 
+        "total": 0, 
+        "bucket": 1440806400
+    }, 
+    {
+        "unique": 0, 
+        "total": 0, 
+        "bucket": 1440892800
+    }, 
+    {
+        "unique": 1, 
+        "total": 1, 
+        "bucket": 1440979200
+    }, 
+    {
+        "unique": 2, 
+        "total": 22, 
+        "bucket": 1441065600
+    }, 
+    {
+        "unique": 4, 
+        "total": 33, 
+        "bucket": 1441152000
+    }, 
+    {
+        "unique": 2, 
+        "total": 8, 
+        "bucket": 1441238400
+    }, 
+    {
+        "unique": 0, 
+        "total": 0, 
+        "bucket": 1441324800
+    }, 
+    {
+        "unique": 0, 
+        "total": 0, 
+        "bucket": 1441411200
+    }, 
+    {
+        "unique": 0, 
+        "total": 0, 
+        "bucket": 1441497600
+    }, 
+    {
+        "unique": 0, 
+        "total": 0, 
+        "bucket": 1441584000
+    }, 
+    {
+        "unique": 1, 
+        "total": 27, 
+        "bucket": 1441670400
+    }, 
+    {
+        "unique": 2, 
+        "total": 6, 
+        "bucket": 1441756800
+    }, 
+    {
+        "unique": 4, 
+        "total": 13, 
+        "bucket": 1441843200
+    }, 
+    {
+        "unique": 1, 
+        "total": 2, 
+        "bucket": 1441929600
+    }
+]
